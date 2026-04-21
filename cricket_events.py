@@ -21,7 +21,8 @@ def get_cricket_events_ui(request: Request):
             params={
                 "limit": 50,
                 "category": "Sports",
-                "competition": "IPL"
+                "competition": "IPL" ,
+                
             }
         )
 
