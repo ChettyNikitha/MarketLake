@@ -1,0 +1,69 @@
+name: CI
+
+on:
+  push:
+    branches: [main, master]
+  pull_request:
+    branches: [main, master]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    services:
+      postgres:
+        image: postgres:16
+        env:
+          POSTGRES_USER: kalshi
+          POSTGRES_PASSWORD: kalshi
+          POSTGRES_DB: kalshi_test
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U kalshi -d kalshi_test"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
+    env:
+      DATABASE_URL: postgresql+psycopg2://kalshi:kalshi@localhost:5432/kalshi_test
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install dependencies
+        run: |
+          pip install -r requirements.txt -r requirements-dev.txt
+
+      - name: Lint with ruff
+        run: ruff check .
+
+      - name: Apply schema to test database
+        run: |
+          python - <<'PY'
+          import os
+          from sqlalchemy import create_engine, text
+
+          engine = create_engine(os.environ["DATABASE_URL"])
+          with open("db/schema.sql", "r", encoding="utf-8") as f:
+              schema_sql = f.read()
+          with engine.begin() as conn:
+              for statement in filter(None, (s.strip() for s in schema_sql.split(";"))):
+                  conn.execute(text(statement))
+          PY
+
+      - name: Run tests
+        run: pytest
+
+  docker-build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Build Docker image
+        run: docker build -t kalshi-app .

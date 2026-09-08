@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Event Details</title>
+    <style>
+        body { font-family: Arial, sans-serif; background-color: #f4f6f9; margin: 0; padding: 40px; }
+        h1 { color: #1f2937; margin-bottom: 10px; }
+        .event-ticker { color: #6b7280; margin-bottom: 30px; }
+        .market-card { background: white; border-radius: 12px; padding: 20px; margin-bottom: 20px; box-shadow: 0 2px 8px rgba(0,0,0,0.08); }
+        .market-title { font-size: 20px; font-weight: bold; color: #111827; margin-bottom: 12px; }
+        .market-info { color: #4b5563; margin-bottom: 8px; }
+        .back-link { display: inline-block; margin-bottom: 30px; color: #2563eb; text-decoration: none; font-weight: bold; }
+        .back-link:hover { text-decoration: underline; }
+        .empty { text-align: center; color: #6b7280; margin-top: 40px; }
+    </style>
+</head>
+<body>
+    <a class="back-link" href="/ui/events">&larr; Back to Events</a>
+
+    <h1>{{ event.title if event else event_ticker }}</h1>
+    <div class="event-ticker"><strong>Event Ticker:</strong> {{ event_ticker }}</div>
+
+    {% for market in markets %}
+        <div class="market-card">
+            <div class="market-title">{{ market.title }}</div>
+            <div class="market-info"><strong>Ticker:</strong> {{ market.ticker }}</div>
+            <div class="market-info"><strong>Status:</strong> {{ market.status }}</div>
+            <div class="market-info"><strong>Yes Bid/Ask:</strong> {{ market.yes_bid }} / {{ market.yes_ask }}</div>
+            <div class="market-info"><strong>No Bid/Ask:</strong> {{ market.no_bid }} / {{ market.no_ask }}</div>
+            <div class="market-info"><strong>Last Price:</strong> {{ market.last_price }}</div>
+            <div class="market-info"><strong>Volume:</strong> {{ market.volume }}</div>
+            <div class="market-info"><strong>Open Interest:</strong> {{ market.open_interest }}</div>
+        </div>
+    {% else %}
+        <p class="empty">No markets found for this event.</p>
+    {% endfor %}
+</body>
+</html>

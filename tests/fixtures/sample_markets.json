@@ -1,0 +1,44 @@
+{
+    "markets": [
+        {
+            "ticker": "KXCRICKET-26MAR01-MI",
+            "event_ticker": "KXCRICKET-26MAR01",
+            "title": "Mumbai Indians win",
+            "status": "active",
+            "yes_bid_dollars": "0.5500",
+            "yes_ask_dollars": "0.5700",
+            "no_bid_dollars": "0.4300",
+            "no_ask_dollars": "0.4500",
+            "last_price_dollars": "0.5600",
+            "volume_fp": "12000.00",
+            "open_interest_fp": "3400.00"
+        },
+        {
+            "ticker": "KXCRICKET-26MAR05-RCB",
+            "event_ticker": "KXCRICKET-26MAR05",
+            "title": "Royal Challengers Bangalore win",
+            "status": "active",
+            "yes_bid_dollars": "0.4800",
+            "yes_ask_dollars": "0.5000",
+            "no_bid_dollars": "0.5000",
+            "no_ask_dollars": "0.5200",
+            "last_price_dollars": "0.4900",
+            "volume_fp": "8600.00",
+            "open_interest_fp": "2100.00"
+        },
+        {
+            "ticker": "KXFED-26MAR18-YES",
+            "event_ticker": "KXFED-26MAR18",
+            "title": "Fed raises rates",
+            "status": "finalized",
+            "yes_bid_dollars": "0.1000",
+            "yes_ask_dollars": "0.1200",
+            "no_bid_dollars": "0.8800",
+            "no_ask_dollars": "0.9000",
+            "last_price_dollars": "0.1100",
+            "volume_fp": "20500.00",
+            "open_interest_fp": "9000.00"
+        }
+    ],
+    "cursor": ""
+}

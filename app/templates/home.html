@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Kalshi Markets Data Platform</title>
+    <style>
+        body { font-family: Arial, sans-serif; background-color: #f4f6f9; margin: 0; padding: 40px; color: #111827; }
+        .top-bar { display: flex; justify-content: space-between; align-items: center; max-width: 960px; margin: 0 auto 24px; }
+        .top-bar h1 { font-size: 24px; margin: 0; }
+        .top-bar .user { color: #6b7280; font-size: 14px; }
+        .top-bar .user a { color: #2563eb; text-decoration: none; margin-left: 10px; font-weight: bold; }
+
+        .wrap { max-width: 960px; margin: 0 auto; }
+
+        .status-banner {
+            border-radius: 10px;
+            padding: 14px 18px;
+            margin-bottom: 24px;
+            font-size: 14px;
+            font-weight: bold;
+        }
+        .status-success { background: #ecfdf5; color: #047857; }
+        .status-failed { background: #fef2f2; color: #b91c1c; }
+        .status-running { background: #eff6ff; color: #1d4ed8; }
+        .status-none { background: #f3f4f6; color: #4b5563; }
+
+        .stat-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 16px; margin-bottom: 28px; }
+        .stat-card { background: white; border-radius: 12px; padding: 18px 20px; box-shadow: 0 2px 8px rgba(0,0,0,0.08); }
+        .stat-card .label { color: #6b7280; font-size: 13px; text-transform: uppercase; letter-spacing: 0.04em; margin-bottom: 6px; }
+        .stat-card .value { font-size: 26px; font-weight: bold; color: #111827; }
+        .stat-card .sub { color: #9ca3af; font-size: 12px; margin-top: 4px; }
+
+        .panel { background: white; border-radius: 12px; padding: 20px 24px; margin-bottom: 28px; box-shadow: 0 2px 8px rgba(0,0,0,0.08); }
+        .panel h2 { font-size: 16px; margin-top: 0; margin-bottom: 16px; color: #1f2937; }
+        table.category-table { width: 100%; border-collapse: collapse; }
+        table.category-table th, table.category-table td { text-align: left; padding: 8px 10px; border-bottom: 1px solid #f0f1f3; font-size: 14px; }
+        table.category-table th { color: #6b7280; font-weight: bold; text-transform: uppercase; font-size: 12px; letter-spacing: 0.04em; }
+        .bar-track { background: #eef2ff; border-radius: 6px; height: 8px; margin-top: 4px; overflow: hidden; }
+        .bar-fill { background: #2563eb; height: 100%; }
+
+        .hero { text-align: center; margin-bottom: 8px; }
+        .hero p { color: #4b5563; }
+        .button {
+            display: inline-block;
+            background-color: #2563eb;
+            color: white;
+            text-decoration: none;
+            padding: 12px 20px;
+            border-radius: 8px;
+            font-weight: bold;
+            margin: 6px 6px 6px 0;
+        }
+        .button:hover { background-color: #1d4ed8; }
+        .button.secondary { background-color: #6b7280; }
+        .button.secondary:hover { background-color: #4b5563; }
+        .empty { color: #6b7280; font-size: 14px; }
+    </style>
+</head>
+<body>
+    <div class="top-bar">
+        <h1>Kalshi Markets Data Platform</h1>
+        <div class="user">
+            {% if username %}Signed in as <strong>{{ username }}</strong><a href="/logout">Log out</a>{% endif %}
+        </div>
+    </div>
+
+    <div class="wrap">
+        {% if last_run %}
+            <div class="status-banner status-{{ last_run.status }}">
+                Last ETL run <strong>{{ last_run.run_id }}</strong>
+                &mdash; status: {{ last_run.status }}
+                &mdash; started {{ last_run_started_at_display }}
+                {% if last_run.duration_seconds is not none %}&mdash; took {{ last_run.duration_seconds }}s{% endif %}
+                {% if last_run.status == 'failed' and last_run.error_message %}
+                    <div style="font-weight: normal; margin-top: 6px;">{{ last_run.error_message }}</div>
+                {% endif %}
+            </div>
+        {% else %}
+            <div class="status-banner status-none">
+                No ETL run recorded yet. Run <code>python -m etl.run</code> (or <code>docker compose run --rm etl</code>) to load data.
+            </div>
+        {% endif %}
+
+        <div class="stat-grid">
+            <div class="stat-card">
+                <div class="label">Events loaded</div>
+                <div class="value">{{ total_events }}</div>
+            </div>
+            <div class="stat-card">
+                <div class="label">Markets loaded</div>
+                <div class="value">{{ total_markets }}</div>
+            </div>
+            <div class="stat-card">
+                <div class="label">Last run fetched</div>
+                <div class="value">{{ last_run.markets_extracted if last_run else "-" }}</div>
+                <div class="sub">markets extracted this run</div>
+            </div>
+            <div class="stat-card">
+                <div class="label">Categories</div>
+                <div class="value">{{ category_counts|length }}</div>
+            </div>
+        </div>
+
+        <div class="panel">
+            <h2>Markets loaded by category</h2>
+            {% if category_counts %}
+                {% set max_count = category_counts[0][1] %}
+                <table class="category-table">
+                    <tr><th>Category</th><th>Markets</th><th></th></tr>
+                    {% for category, count in category_counts %}
+                        <tr>
+                            <td>{{ category }}</td>
+                            <td>{{ count }}</td>
+                            <td style="width: 40%;">
+                                <div class="bar-track">
+                                    <div class="bar-fill" style="width: {{ (count / max_count * 100) if max_count else 0 }}%;"></div>
+                                </div>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </table>
+            {% else %}
+                <p class="empty">No data yet -- run the ETL pipeline to populate this.</p>
+            {% endif %}
+        </div>
+
+        <div class="hero">
+            <a class="button" href="/ui/events">Browse Events</a>
+            <a class="button secondary" href="/docs">API Docs</a>
+        </div>
+    </div>
+</body>
+</html>

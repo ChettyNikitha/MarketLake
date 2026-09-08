@@ -1,9 +1,43 @@
-version: "3.8"
-
 services:
-  web:
-    build: .
+  postgres:
+    image: postgres:16
+    environment:
+      POSTGRES_USER: kalshi
+      POSTGRES_PASSWORD: kalshi
+      POSTGRES_DB: kalshi
     ports:
-      - "8000:8000"
+      - "5433:5432"
     volumes:
-      - .:/app
+      - kalshi_postgres_data:/var/lib/postgresql/data
+      - ./db/schema.sql:/docker-entrypoint-initdb.d/01-schema.sql:ro
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U kalshi -d kalshi"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  api:
+    build: .
+    depends_on:
+      postgres:
+        condition: service_healthy
+    env_file:
+      - .env
+    ports:
+      - "8001:8000"
+
+  etl:
+    build: .
+    depends_on:
+      postgres:
+        condition: service_healthy
+    env_file:
+      - .env
+    volumes:
+      - ./secrets:/app/secrets:ro
+    command: python -m etl.run
+    profiles:
+      - etl
+
+volumes:
+  kalshi_postgres_data:

@@ -1,0 +1,16 @@
+# OPTIONAL stretch: minimal dbt project skeleton targeting the same Postgres
+# curated tables that etl/load.py writes to. Not run by CI.
+name: 'kalshi_markets'
+version: '1.0.0'
+config-version: 2
+
+profile: 'kalshi_markets'
+
+model-paths: ["models"]
+
+models:
+  kalshi_markets:
+    staging:
+      +materialized: view
+    marts:
+      +materialized: table

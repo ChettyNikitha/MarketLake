@@ -1,5 +1,12 @@
 fastapi
-uvicorn
+uvicorn[standard]
+jinja2
 requests
 cryptography
-jinja2
+sqlalchemy
+psycopg2-binary
+pandas
+pyarrow
+pydantic-settings
+itsdangerous
+python-multipart

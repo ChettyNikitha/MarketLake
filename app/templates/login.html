@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Sign in</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f6f9;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+        .container {
+            background: white;
+            padding: 40px;
+            border-radius: 14px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            width: 340px;
+        }
+        h1 { color: #111827; margin-bottom: 6px; font-size: 22px; }
+        p.subtitle { color: #6b7280; margin-top: 0; margin-bottom: 24px; font-size: 14px; }
+        label { display: block; color: #374151; font-weight: bold; margin-bottom: 6px; font-size: 14px; }
+        input {
+            width: 100%;
+            padding: 10px 12px;
+            margin-bottom: 16px;
+            border-radius: 8px;
+            border: 1px solid #d1d5db;
+            box-sizing: border-box;
+            font-size: 14px;
+        }
+        button {
+            width: 100%;
+            background-color: #2563eb;
+            color: white;
+            border: none;
+            padding: 12px;
+            border-radius: 8px;
+            font-weight: bold;
+            font-size: 15px;
+            cursor: pointer;
+        }
+        button:hover { background-color: #1d4ed8; }
+        .error { background: #fef2f2; color: #b91c1c; padding: 10px 12px; border-radius: 8px; margin-bottom: 16px; font-size: 14px; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Kalshi Markets Data Platform</h1>
+        <p class="subtitle">Sign in to view the operator dashboard.</p>
+
+        {% if error %}
+            <div class="error">Invalid username or password.</div>
+        {% endif %}
+
+        <form method="post" action="/login">
+            <input type="hidden" name="next" value="{{ next }}">
+            <label for="username">Username</label>
+            <input type="text" id="username" name="username" autocomplete="username" required autofocus>
+            <label for="password">Password</label>
+            <input type="password" id="password" name="password" autocomplete="current-password" required>
+            <button type="submit">Sign in</button>
+        </form>
+    </div>
+</body>
+</html>

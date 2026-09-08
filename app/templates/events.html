@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Events</title>
+    <style>
+        body { font-family: Arial, sans-serif; background-color: #f4f6f9; margin: 0; padding: 40px; }
+        h1 { text-align: center; color: #1f2937; margin-bottom: 20px; }
+        .back-home { display: inline-block; margin-bottom: 25px; color: #2563eb; text-decoration: none; font-weight: bold; }
+        .back-home:hover { text-decoration: underline; }
+        form.filter-bar { text-align: center; margin-bottom: 30px; }
+        select, button { padding: 8px 12px; border-radius: 6px; border: 1px solid #d1d5db; }
+        .event-card { background: white; border-radius: 12px; padding: 20px; margin-bottom: 20px; box-shadow: 0 2px 8px rgba(0,0,0,0.08); }
+        .event-title { font-size: 22px; font-weight: bold; color: #111827; margin-bottom: 10px; }
+        .event-info { color: #4b5563; margin-bottom: 8px; }
+        .details-link { display: inline-block; margin-top: 12px; padding: 10px 16px; background-color: #2563eb; color: white; text-decoration: none; border-radius: 8px; }
+        .details-link:hover { background-color: #1d4ed8; }
+        .empty { text-align: center; color: #6b7280; margin-top: 40px; }
+    </style>
+</head>
+<body>
+    <a class="back-home" href="/">&larr; Dashboard</a>
+    <h1>Events</h1>
+
+    <form class="filter-bar" method="get" action="/ui/events">
+        <select name="category" onchange="this.form.submit()">
+            <option value="">All categories</option>
+            {% for c in categories %}
+                <option value="{{ c }}" {% if c == selected_category %}selected{% endif %}>{{ c }}</option>
+            {% endfor %}
+        </select>
+        <noscript><button type="submit">Filter</button></noscript>
+    </form>
+
+    {% for event in events %}
+        <div class="event-card">
+            <div class="event-title">{{ event.title }}</div>
+            <div class="event-info"><strong>Category:</strong> {{ event.category }}</div>
+            <div class="event-info"><strong>Status:</strong> {{ event.status }}</div>
+            <div class="event-info"><strong>Strike Date:</strong> {{ event.strike_date }}</div>
+            <div class="event-info"><strong>Event Ticker:</strong> {{ event.event_ticker }}</div>
+            <a class="details-link" href="/ui/events/{{ event.event_ticker }}">View Markets</a>
+        </div>
+    {% else %}
+        <p class="empty">No events found. Run the ETL pipeline (python -m etl.run) to load data.</p>
+    {% endfor %}
+</body>
+</html>
