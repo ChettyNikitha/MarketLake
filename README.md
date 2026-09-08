@@ -1,4 +1,4 @@
-# Kalshi Markets Data Platform
+# Kalshi-MarketLake
 
 A data-engineering demo project built around Kalshi's public demo trading
 API. It started as a small FastAPI app that live-proxied Kalshi's cricket

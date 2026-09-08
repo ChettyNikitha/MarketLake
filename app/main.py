@@ -5,7 +5,7 @@ from app.config import get_settings
 from app.routers import analytics, events, health, markets
 from app import auth, web
 
-app = FastAPI(title="Kalshi Markets Data Platform")
+app = FastAPI(title="Kalshi-MarketLake")
 
 app.add_middleware(SessionMiddleware, secret_key=get_settings().session_secret_key, same_site="lax")
 
