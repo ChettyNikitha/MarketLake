@@ -120,7 +120,7 @@ Integration tests are skipped automatically if `DATABASE_URL` isn't
 reachable. CI (`.github/workflows/ci.yml`) runs the full suite against a
 Postgres service container.
 
-## Roadmap / next-interview extensions
+## Roadmap 
 
 - **Airflow DAG stub** (`airflow/dags/kalshi_pipeline_dag.py`) -- a daily
   `PythonOperator` task wrapping `etl.pipeline.run_pipeline`. Guarded
